@@ -4,10 +4,7 @@ let sections;
 let audioCtx;
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupTypewriterEffect();
     sections = gsap.utils.toArray(".section");
-
-    
 
     setTimeout(() => {
         const loadingScreen = document.getElementById('loading-screen');
@@ -19,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 initializeMainExperience();
             }
         });
-    }, 4500);
+    }, 4000); // 4-second delay to match the new progress bar animation
 });
 
 function initializeMainExperience() {
@@ -29,99 +26,36 @@ function initializeMainExperience() {
 
      window.addEventListener('wheel', handleWheel);
     setupTerminalLogic();
-    setupFlipCards();
-    setupNavigation();;
-}
 
-// REPLACE your old 'DOMContentLoaded' listener with this one.
-document.addEventListener('DOMContentLoaded', () => {
-    runCyberpunkBootSequence(); // Call the new loading sequence
-    sections = gsap.utils.toArray(".section");
-});
+    setupInfiniteSlider(); // Call event slider logic
+    setupSponsorSlider(); // Call sponsor slider logic
+    setupFlipCards(); // Call flip logic AFTER cloning cards
+    
+    setupNavigation();
 
-// This new function replaces the old setupTypewriterEffect
-function runCyberpunkBootSequence() {
-    const asciiLogoEl = document.getElementById('ascii-logo');
-    const bootMessageEl = document.getElementById('boot-message');
-    const progressBar = document.getElementById('progress-bar');
-    const loadingScreen = document.getElementById('loading-screen');
+    // --- SLIDER CONTROLS ---
+    // Only run this logic on mobile
+    if (window.innerWidth <= 768) {
+        // Event Slider
+        const eventGrid = document.querySelector("#nexus .event-hub-grid");
+        if (eventGrid) {
+            eventGrid.addEventListener('mouseenter', () => pauseSlider(eventGrid));
+            eventGrid.addEventListener('touchstart', () => pauseSlider(eventGrid), { passive: true });
+            eventGrid.addEventListener('mouseleave', () => playSlider(eventGrid));
+            eventGrid.addEventListener('touchend', () => playSlider(eventGrid));
+        }
 
-    const asciiArt = `
-████████╗███████╗ ██████╗██╗  ██╗███╗   ██╗ ██████╗     ██████╗   █████╗ ██████╗ ██╗███████╗███╗   ██╗███████╗
-╚══██╔══╝██╔════╝██╔════╝██║  ██║████╗  ██║██╔═══██╗    ██╔══██╗ ██╔══██╗██╔══██╗██║██╔════╝████╗  ██║██╔════╝
-   ██║   █████╗  ██║     ███████║██╔██╗ ██║██║   ██║    ╚█████╗ ███████║██████╔╝██║█████╗  ██╔██╗ ██║███████╗
-   ██║   ██╔══╝  ██║     ██╔══██║██║╚██╗██║██║   ██║     ╚═══██╗██╔══██║██╔═══╝ ██║██╔══╝  ██║╚██╗██║╚════██║
-   ██║   ███████╗╚██████╗██║  ██║██║ ╚████║╚██████╔╝    ██████╔╝██║  ██║██║     ██║███████╗██║ ╚████║███████║
-   ╚═╝   ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚══════╝
-    `;
-
-    const bootMessages = [
-        "R.E.M. Sleep Cycle Engaged...",
-        "Connecting to SYS-Mainframe...",
-        "Bypassing ICE Protocols [v2.5]...",
-        "Injecting Reality Matrix...",
-        "Compiling Event Shaders...",
-        "Calibrating Neural Uplink...",
-        "ACCESS GRANTED.",
-        "Welcome to Techno Sapiens 2k25"
-    ];
-
-    let messageIndex = 0;
-    let progress = 0;
-
-    // 1. Animate ASCII Logo
-    gsap.to(asciiLogoEl, { opacity: 1, duration: 2, delay: 0.5 });
-    asciiLogoEl.innerHTML = asciiArt;
-
-    // Helper function for the text scramble effect
-    function scrambleText(element, text, onComplete) {
-        let i = 0;
-        const scrambleInterval = setInterval(() => {
-            const randomChars = '▒▓█_#<>01?*';
-            let revealedText = text.substring(0, i);
-            let scrambledPart = '';
-            for (let j = i; j < text.length; j++) {
-                scrambledPart += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-            }
-            element.textContent = revealedText + scrambledPart;
-            
-            if (i >= text.length) {
-                clearInterval(scrambleInterval);
-                element.textContent = text; // Ensure final text is correct
-                if(onComplete) onComplete();
-            }
-            i++;
-        }, 50); // Speed of reveal
-    }
-
-    // 2. Start the boot sequence messages
-    function showNextMessage() {
-        if (messageIndex < bootMessages.length) {
-            scrambleText(bootMessageEl, `> ${bootMessages[messageIndex]}`, () => {
-                progress = Math.min(100, progress + (100 / bootMessages.length));
-                gsap.to(progressBar, { width: `${progress}%` });
-                
-                // Set timeout for next message
-                const delay = messageIndex === bootMessages.length - 1 ? 1500 : 500;
-                setTimeout(showNextMessage, delay);
-                messageIndex++;
-            });
-        } else {
-            // 3. Sequence finished, fade out loading screen
-            gsap.to(loadingScreen, {
-                opacity: 0,
-                duration: 1.5,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    loadingScreen.style.display = 'none';
-                    initializeMainExperience();
-                }
-            });
+        // Sponsor Slider
+        const sponsorGrid = document.querySelector("#sponsors .sponsors-grid");
+        const sponsorInner = document.querySelector("#sponsors .sponsor-grid-inner");
+        if (sponsorGrid && sponsorInner) {
+            sponsorGrid.addEventListener('mouseenter', () => pauseSlider(sponsorInner));
+            sponsorGrid.addEventListener('touchstart', () => pauseSlider(sponsorInner), { passive: true });
+            sponsorGrid.addEventListener('mouseleave', () => playSlider(sponsorInner));
+            sponsorGrid.addEventListener('touchend', () => playSlider(sponsorInner));
         }
     }
-
-    // Start the whole sequence after a short delay for the logo to appear
-    setTimeout(showNextMessage, 2500);
+    // --- END SLIDER CONTROLS ---
 }
 
 function playSound(type) {
@@ -184,7 +118,7 @@ function setupTerminalLogic() {
                 gsap.fromTo(nextStepElement, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.5});
                 nextStepElement.querySelector('input, .mission-tags')?.focus();
             }
-        }); // <-- REMOVED { once: true } FROM HERE
+        });
     });
 }
 
@@ -204,7 +138,6 @@ function generateId() {
     const phone = document.getElementById('phone-input').value;
     const selectedMissions = Array.from(document.querySelectorAll('.mission-tag.selected')).map(el => el.textContent);
     
-    // Generate a random Agent ID
     const agentId = `TS-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     document.getElementById('id-number').textContent = agentId;
@@ -216,7 +149,7 @@ function generateId() {
     const idCardContainer = document.getElementById('id-card-container');
     
     gsap.to(terminal, { duration: 0.5, autoAlpha: 0, scale: 0.8, onComplete: () => {
-        terminal.style.display = 'none'; // Hide it completely
+        terminal.style.display = 'none'; 
         idCardContainer.style.display = 'flex';
         gsap.fromTo(idCardContainer, {autoAlpha: 0, scale: 0.8, y: 50}, {duration: 0.7, autoAlpha: 1, scale: 1, y: 0, ease: 'back.out(1.7)'});
     }});
@@ -230,7 +163,6 @@ function resetRegistration() {
     gsap.to(idCardContainer, { duration: 0.5, autoAlpha: 0, scale: 0.8, onComplete: () => {
         idCardContainer.style.display = 'none';
         
-        // Reset form fields and visibility
         document.getElementById('name-input').value = '';
         document.getElementById('email-input').value = '';
         document.getElementById('phone-input').value = '';
@@ -246,29 +178,26 @@ function resetRegistration() {
     }});
 }
 
-// ADD THIS ENTIRE NEW FUNCTION
 function setupFlipCards() {
-    const eventNodes = document.querySelectorAll('.event-node');
+    const eventNodes = document.querySelectorAll('.event-node'); 
+    const grid = document.querySelector("#nexus .event-hub-grid");
     
     eventNodes.forEach(node => {
         node.addEventListener('click', () => {
-            playClickSound(); // Plays the click sound you already have
+            playClickSound(); 
 
-            // This part makes sure only one card is flipped at a time.
-            // It checks for other flipped cards and un-flips them.
             document.querySelectorAll('.event-node.flipped').forEach(flippedNode => {
                 if (flippedNode !== node) {
                     flippedNode.classList.remove('flipped');
                 }
             });
 
-            // This toggles the flip for the card you clicked on.
             node.classList.toggle('flipped');
+            playSlider(grid);
         });
     });
 }
 
-// ADD THIS ENTIRE NEW FUNCTION
 function setupNavigation() {
     const navButtons = document.querySelectorAll('.nav-item');
     navButtons.forEach(button => {
@@ -276,7 +205,6 @@ function setupNavigation() {
             const targetId = button.dataset.target;
             let targetIndex = -1;
 
-            // Find the index of the section with the matching ID
             sections.forEach((section, index) => {
                 if (section.id === targetId) {
                     targetIndex = index;
@@ -288,4 +216,58 @@ function setupNavigation() {
             }
         });
     });
+}
+
+function setupInfiniteSlider() {
+    if (window.innerWidth <= 768) {
+        const grid = document.querySelector("#nexus .event-hub-grid");
+        if (!grid) return;
+        const eventNodes = grid.querySelectorAll('.event-node');
+        eventNodes.forEach(node => {
+            const clone = node.cloneNode(true);
+            grid.appendChild(clone);
+        });
+    }
+}
+
+// NEW FUNCTION FOR SPONSOR SLIDER
+function setupSponsorSlider() {
+    if (window.innerWidth <= 768) {
+        const grid = document.querySelector("#sponsors .sponsors-grid");
+        if (!grid) return;
+
+        // 1. Create a new inner wrapper
+        const innerWrapper = document.createElement('div');
+        innerWrapper.classList.add('sponsor-grid-inner');
+        
+        // 2. Get all original sponsor logos
+        const logos = grid.querySelectorAll('.sponsor-logo-container');
+        
+        // 3. Move original logos into the new wrapper
+        logos.forEach(logo => {
+            innerWrapper.appendChild(logo);
+        });
+
+        // 4. Add the new wrapper to the (now empty) grid
+        grid.appendChild(innerWrapper);
+
+        // 5. Clone all logos and add them to the wrapper for the loop
+        logos.forEach(logo => {
+            const clone = logo.cloneNode(true);
+            innerWrapper.appendChild(clone);
+        });
+    }
+}
+
+// GENERIC FUNCTIONS TO CONTROL SLIDER
+function pauseSlider(element) {
+    if (window.innerWidth <= 768 && element) {
+        element.style.animationPlayState = 'paused';
+    }
+}
+
+function playSlider(element) {
+    if (window.innerWidth <= 768 && element) {
+        element.style.animationPlayState = 'running';
+    }
 }
