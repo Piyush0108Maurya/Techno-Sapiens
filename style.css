@@ -240,37 +240,17 @@ body {
 }
 @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.3; } }
 
-.event-hub-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    max-width: 800px;
-    width: 100%;
-}
-.event-node {
-    border: 2px solid var(--magenta);
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px var(--magenta);
-}
-.event-node:hover {
-    background: var(--magenta);
-    color: var(--black);
-    transform: scale(1.05);
-    box-shadow: 0 0 25px var(--magenta);
-}
-.event-node h3 { font-family: var(--font-primary); margin-bottom: 0.5rem; }
 
 /* === FUTURISTIC EVENT NEXUS CARDS === */
 #nexus .logo {
-  background: linear-gradient(90deg, #00bfff, #00ffff);
+  background: linear-gradient(90deg, #FF00FF, #C6FF00); /* Changed to Magenta/Lime */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
   letter-spacing: 3px;
 }
 
+/* This is the desktop grid */
 .event-hub-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -298,40 +278,39 @@ body {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border: 2px solid rgba(0, 255, 255, 0.5);
+  border: 2px solid var(--magenta); /* Changed to magenta */
   border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.3); /* Changed to magenta */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: rgba(0, 10, 20, 0.5);
+  background: rgba(20, 0, 10, 0.5); /* Changed to magenta-tinted bg */
   backdrop-filter: blur(10px);
   transition: all 0.4s ease;
 }
 
 .event-front {
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff;
+  color: var(--magenta); /* Changed to magenta */
+  text-shadow: 0 0 10px var(--magenta); /* Changed to magenta */
   font-family: var(--font-primary);
   font-size: 1.5rem;
   letter-spacing: 1px;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 .event-front:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 35px rgba(255, 0, 255, 0.6); /* Changed to magenta */
+  background: rgba(255, 0, 255, 0.1); /* Added magenta bg on hover */
 }
 
 .event-back {
   transform: rotateY(180deg);
   padding: 1rem;
-  color: var(--lime);
+  color: var(--lime); /* Kept lime for contrast */
   font-family: var(--font-secondary);
   font-size: 1rem;
   text-align: center;
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
 }
 
 
@@ -617,7 +596,7 @@ body {
   filter: none; /* Reveals original logo colors on hover */
 }
 
-/* === REVAMPED LOADING SCREEN === */
+/* === SIMPLE LOADING SCREEN === */
 #loading-screen {
     background-color: var(--black);
     z-index: 1000;
@@ -627,55 +606,56 @@ body {
     align-items: center;
     font-family: var(--font-secondary);
     cursor: wait;
-    animation: text-flicker 3s linear infinite; /* Subtle flicker on the whole screen */
 }
 
-/* ASCII Art Logo */
-#ascii-logo {
+.loading-title {
+    font-family: var(--font-primary);
+    font-size: 3rem;
     color: var(--cyan);
-    text-shadow: 0 0 5px var(--cyan), 0 0 15px var(--cyan);
-    font-size: 0.8rem; /* Smaller font for detailed art */
-    text-align: center;
-    line-height: 1.1;
-    opacity: 0;
-    margin-bottom: 2rem;
-    font-family: 'Share Tech Mono', monospace;
-    white-space: pre;
-    transition: opacity 2s ease;
+    text-shadow: 0 0 10px var(--cyan), 0 0 25px var(--cyan);
+    margin-bottom: 2.5rem;
+    letter-spacing: 2px;
 }
 
-/* Boot Sequence Text & Progress Bar */
-.boot-sequence-container {
-    width: 90%;
-    max-width: 600px;
+.spiral-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(0, 255, 255, 0.2); /* Faint track */
+    border-top-color: var(--cyan); /* The main color */
+    border-radius: 50%;
+    margin-bottom: 2.5rem;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 15px var(--cyan);
 }
 
-#boot-message {
-    text-align: left;
-    color: var(--lime);
-    font-size: 1.1rem;
-    height: 2em; /* Reserve space to prevent layout shift */
-    letter-spacing: 1px;
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-#boot-message::after {
-    content: '█'; /* Use a solid block for the cursor */
-    color: var(--lime);
-    animation: blink 1s step-end infinite;
-}
-
-#loading-screen .progress-bar-container {
-    border: 1px solid var(--cyan);
-    padding: 2px;
-    margin-top: 1rem;
+.curved-progress-bar-container {
+    width: 80%;
+    max-width: 400px;
+    height: 20px;
     background: rgba(0, 255, 255, 0.1);
-    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+    border: 2px solid var(--cyan);
+    border-radius: 10px; /* This adds the "curves" */
+    box-shadow: 0 0 15px var(--cyan), inset 0 0 10px rgba(0, 255, 255, 0.2);
+    padding: 3px;
+    overflow: hidden; /* To keep the inner bar curved */
 }
 
-#loading-screen .progress-bar {
-    background-color: var(--cyan);
-    box-shadow: 0 0 10px var(--cyan), inset 0 0 5px rgba(0,0,0,0.5);
-    transition: width 0.4s ease-out;
+.curved-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 6px; /* Slightly smaller radius for the inside */
+    box-shadow: 0 0 10px var(--cyan);
+    animation: load 4s ease-out forwards; /* Match JS timeout */
+}
+
+@keyframes load {
+    from { width: 0%; }
+    to { width: 100%; }
 }
 
 /* Overlays & Effects */
@@ -697,27 +677,220 @@ body {
     opacity: 0.6;
 }
 
-/* HUD Corner Elements */
-.hud-element {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--cyan);
-    opacity: 0.7;
-    box-shadow: 0 0 8px var(--cyan);
+/* === MOBILE NAVIGATION === */
+@media (max-width: 768px) {
+  .side-nav {
+    flex-direction: row; /* Arrange items horizontally */
+    width: 90%; /* Take up most of the width */
+    left: 50%;
+    transform: translateX(-50%); /* Center it */
+    justify-content: center; /* Center the icons */
+    padding: 0.5rem 1rem;
+    gap: 1.5rem; /* Space out icons */
+    border-radius: 50px; /* Make it a pill shape */
+  }
+
+  .left-nav {
+    top: 1rem; /* Position at the top */
+    transform: translateX(-50%); /* Keep centered */
+    left: 50%; /* Explicitly set left for centering */
+  }
+
+  /* Hide the text labels on mobile for the main nav */
+  .left-nav .nav-item::after {
+    display: none;
+  }
+
+  .right-nav {
+    top: auto; /* Remove the 'top: 50%' */
+    bottom: 1rem; /* Position at the bottom */
+    transform: translateX(-50%); /* Keep centered */
+    left: 50%; /* Explicitly set left for centering */
+  }
+  
+  /* === REGISTRATION MOBILE === */
+  #registration {
+      padding-top: 5rem; /* Push content below top nav */
+      overflow: hidden; /* Hide overflow */
+  }
+
+  #registration .terminal {
+      width: 95vw; /* Make form fit screen */
+      max-width: 500px;
+      transform: scale(0.9); /* Scale down form slightly */
+      margin: 0;
+  }
+
+  /* === LANDING LOGO MOBILE LAYOUT === */
+  #landing .logo {
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: 0; /* Remove horizontal gap */
+    line-height: 1.2; /* Add line height for stacked words */
+    font-size: clamp(3rem, 15vw, 4.5rem); /* Adjust font size for mobile */
+  }
+
+  #landing .logo .divider {
+    display: block; /* Make it a block element */
+    width: 100%; /* Force it to take full width, pushing Sapiens down */
+    height: 0; /* Make it invisible */
+    margin: 0; /* Reset margins */
+    background: none; /* Hide background */
+    box-shadow: none; /* Hide shadow */
+  }
+
+  /* Optional: Adjust special letter size */
+  #landing .logo .t-letter,
+  #landing .logo .s-letter {
+    font-size: 1.2em; /* Slightly adjust size */
+  }
+
+  /* === EVENT NEXUS MOBILE SLIDER === */
+  #nexus {
+      padding-left: 0;
+      padding-right: 0;
+      overflow: hidden; /* Clips the sliding grid */
+  }
+
+  #nexus .logo {
+      font-size: 2.5rem; /* Smaller title */
+      margin-bottom: 1rem;
+  }
+
+  /* This is the MOBILE override for the event grid */
+  #nexus .event-hub-grid {
+      grid-template-columns: none; /* Override desktop grid */
+      display: flex;
+      flex-wrap: nowrap;
+      width: max-content; 
+      max-width: none;
+      gap: 1.5rem;
+      padding-left: 1.5rem; 
+      perspective: none;
+      animation: horizontal-slide 30s linear infinite;
+  }
+
+  #nexus .event-node {
+      width: 250px; 
+      height: 220px; 
+      flex-shrink: 0; 
+      transform-style: preserve-3d;
+      transform: none;
+  }
+
+  #nexus .event-node.flipped {
+      transform: rotateY(180deg); 
+  }
+  
+  #nexus .event-back {
+      display: flex; 
+  }
+
+  #nexus .event-front {
+      font-size: 1.5rem; 
+  }
+  
+  /* === SPONSORS MOBILE SLIDER === */
+  #sponsors {
+      height: 100vh; /* Make section fit full screen */
+      overflow: hidden; /* Hide anything that breaks out */
+      padding: 1rem; /* Adjust padding for mobile */
+      padding-top: 5rem; /* Push heading below top nav */
+  }
+
+  #sponsors .logo {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0; /* Prevent heading from shrinking */
+  }
+  
+  #sponsors .tagline {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0; /* Prevent tagline from shrinking */
+  }
+  
+  /* This is the viewport for the slider */
+  #sponsors .sponsors-grid {
+      display: block; /* Override desktop 'grid' */
+      grid-template-columns: none;
+      width: 100%;
+      height: 100%; /* Fill remaining space */
+      overflow: hidden; /* This is the viewport */
+      margin-top: 0;
+      
+      /* "Different Style": Fade effect at top and bottom */
+      -webkit-mask-image: linear-gradient(to bottom, 
+          transparent 0%, 
+          black 15%, 
+          black 85%, 
+          transparent 100%
+      );
+      mask-image: linear-gradient(to bottom, 
+          transparent 0%, 
+          black 15%, 
+          black 85%, 
+          transparent 100%
+      );
+  }
+  
+  /* This is the new inner div created by JS */
+  .sponsor-grid-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 2-column layout */
+      gap: 1rem;
+      width: 100%;
+      /* Animation */
+      animation: vertical-slide 30s linear infinite;
+  }
+  
+  #sponsors .sponsor-logo-container {
+      padding: 1rem; /* Make logos smaller */
+      margin: 0;
+      width: 100%;
+      flex-shrink: 0; /* Prevent shrinking */
+  }
+
+  /* === ARCHITECTS MOBILE === */
+  #architects {
+    padding-top: 5rem; /* Push content below top nav */
+    height: 100vh; /* Ensure it still fills the view */
+  }
+
+  #architects .logo {
+    font-size: 2.5rem; /* Match other mobile headings */
+    margin-bottom: 1rem;
+  }
+  
+  #architects .organizer-logos {
+      gap: 1.5rem; /* Tighter gap */
+      margin-top: 1rem;
+  }
+  
+  #architects .org-logo {
+    width: 120px; /* Slightly smaller logos for mobile */
+  }
+  
+  #architects .org-x {
+    font-size: 2rem; /* Slightly smaller 'x' */
+  }
 }
-.top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; }
-.top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; }
-.bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; }
-.bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
+@keyframes horizontal-slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
-/* Keyframe Animations */
-@keyframes text-flicker {
-    0%   { opacity: 0.98; }
-    5%   { opacity: 0.90; }
-    10%  { opacity: 0.98; }
-    25%  { opacity: 0.95; }
-    30%  { opacity: 1; }
-    100% { opacity: 1; }
+/* NEW KEYFRAME FOR VERTICAL SLIDE */
+@keyframes vertical-slide {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    /* Slides up by 50% of its total height (since we doubled the logos) */
+    transform: translateY(-50%);
+  }
 }
