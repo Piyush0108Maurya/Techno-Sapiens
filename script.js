@@ -3,6 +3,11 @@ let isAnimating = false;
 let sections;
 let audioCtx;
 
+// --- NEW VARIABLES FOR SWIPE DETECTION ---
+let touchStartY = 0;
+let touchEndY = 0;
+let isPageSwipe = false; // Tracks if we are swiping the page or a slider
+
 document.addEventListener('DOMContentLoaded', () => {
     sections = gsap.utils.toArray(".section");
 
@@ -24,17 +29,20 @@ function initializeMainExperience() {
     gsap.set(sections[1], { autoAlpha: 1 });
     currentSection = 1;
 
-     window.addEventListener('wheel', handleWheel);
-    setupTerminalLogic();
+    // --- UPDATED EVENT LISTENERS ---
+    window.addEventListener('wheel', handleWheel); // For desktop mouse
+    window.addEventListener('touchstart', handleTouchStart, { passive: false }); // For mobile swipe
+    window.addEventListener('touchmove', handleTouchMove, { passive: false }); // For mobile swipe
+    window.addEventListener('touchend', handleTouchEnd); // For mobile swipe
+    // --- END UPDATED LISTENERS ---
 
+    setupTerminalLogic();
     setupInfiniteSlider(); // Call event slider logic
     setupSponsorSlider(); // Call sponsor slider logic
     setupFlipCards(); // Call flip logic AFTER cloning cards
-    
     setupNavigation();
 
     // --- SLIDER CONTROLS ---
-    // Only run this logic on mobile
     if (window.innerWidth <= 768) {
         // Event Slider
         const eventGrid = document.querySelector("#nexus .event-hub-grid");
@@ -112,7 +120,6 @@ function setupTerminalLogic() {
         const inputElement = document.getElementById(inputId);
         inputElement.addEventListener('input', () => {
             const nextStepElement = document.getElementById(nextStepId);
-            // Check if the input has content and the next step is not yet visible
             if (inputElement.value.length > 0 && nextStepElement.style.display === 'none') {
                 nextStepElement.style.display = 'block';
                 gsap.fromTo(nextStepElement, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.5});
@@ -230,28 +237,22 @@ function setupInfiniteSlider() {
     }
 }
 
-// NEW FUNCTION FOR SPONSOR SLIDER
 function setupSponsorSlider() {
     if (window.innerWidth <= 768) {
         const grid = document.querySelector("#sponsors .sponsors-grid");
         if (!grid) return;
 
-        // 1. Create a new inner wrapper
         const innerWrapper = document.createElement('div');
         innerWrapper.classList.add('sponsor-grid-inner');
         
-        // 2. Get all original sponsor logos
         const logos = grid.querySelectorAll('.sponsor-logo-container');
         
-        // 3. Move original logos into the new wrapper
         logos.forEach(logo => {
             innerWrapper.appendChild(logo);
         });
 
-        // 4. Add the new wrapper to the (now empty) grid
         grid.appendChild(innerWrapper);
 
-        // 5. Clone all logos and add them to the wrapper for the loop
         logos.forEach(logo => {
             const clone = logo.cloneNode(true);
             innerWrapper.appendChild(clone);
@@ -259,7 +260,6 @@ function setupSponsorSlider() {
     }
 }
 
-// GENERIC FUNCTIONS TO CONTROL SLIDER
 function pauseSlider(element) {
     if (window.innerWidth <= 768 && element) {
         element.style.animationPlayState = 'paused';
@@ -270,4 +270,52 @@ function playSlider(element) {
     if (window.innerWidth <= 768 && element) {
         element.style.animationPlayState = 'running';
     }
+}
+
+// --- NEW FUNCTIONS FOR SWIPE DETECTION ---
+
+function handleTouchStart(event) {
+    if (isAnimating) return;
+
+    // Check if the touch starts on one of the sliders
+    if (event.target.closest('.event-hub-grid') || event.target.closest('.sponsors-grid')) {
+        isPageSwipe = false; // This is a slider scroll, not a page swipe
+    } else {
+        isPageSwipe = true; // This is a page swipe
+        touchStartY = event.changedTouches[0].screenY;
+        touchEndY = event.changedTouches[0].screenY; // Initialize endY
+    }
+}
+
+function handleTouchMove(event) {
+    if (!isPageSwipe || isAnimating) return; // Not a page swipe, or busy
+
+    // Prevent the browser from scrolling vertically while we track the swipe
+    event.preventDefault(); 
+    touchEndY = event.changedTouches[0].screenY;
+}
+
+function handleTouchEnd() {
+    if (!isPageSwipe || isAnimating) {
+        isPageSwipe = false; // Reset
+        return;
+    }
+
+    const deltaY = touchEndY - touchStartY;
+    const swipeThreshold = 50; // User must swipe at least 50px
+
+    if (Math.abs(deltaY) > swipeThreshold) {
+        if (deltaY < 0) {
+            // Swiped Up
+            goToSection(currentSection + 1);
+        } else {
+            // Swiped Down
+            goToSection(currentSection - 1);
+        }
+    }
+    
+    // Reset all flags
+    isPageSwipe = false;
+    touchStartY = 0;
+    touchEndY = 0;
 }
