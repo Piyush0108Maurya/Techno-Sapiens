@@ -748,7 +748,7 @@ body {
   /* Optional: Adjust special letter size */
   #landing .logo .t-letter,
   #landing .logo .s-letter {
-    font-size: 1.3em; /* Slightly adjust size */
+    font-size: 1.2em; /* Slightly adjust size */
   }
 
   /* === EVENT NEXUS MOBILE SLIDER === */
@@ -906,3 +906,4 @@ body {
     transform: translateY(-50%);
   }
 }
+
