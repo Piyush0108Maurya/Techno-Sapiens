@@ -806,7 +806,7 @@ body {
       height: 100vh; /* Make section fit full screen */
       overflow: hidden; /* Hide anything that breaks out */
       padding: 1rem; /* Adjust padding for mobile */
-      padding-top: 5rem; /* Push heading below top nav */
+      padding-top: 6rem; /* Push heading below top nav */
   }
 
   #sponsors .logo {
@@ -906,4 +906,5 @@ body {
     transform: translateY(-50%);
   }
 }
+
 
