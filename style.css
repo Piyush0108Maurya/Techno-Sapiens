@@ -710,7 +710,8 @@ body {
   
   /* === REGISTRATION MOBILE === */
   #registration {
-      padding-top: 5rem; /* Push content below top nav */
+      padding-top: 6rem; /* Push content below top nav */
+      padding-bottom: 6rem; /* Push content above bottom nav */
       overflow: hidden; /* Hide overflow */
   }
 
@@ -719,6 +720,12 @@ body {
       max-width: 500px;
       transform: scale(0.9); /* Scale down form slightly */
       margin: 0;
+      margin-top: -2rem; /* Pull it up a bit */
+  }
+
+  /* NEW: Make ID card fit on mobile */
+  #id-card-container {
+      transform: scale(0.9);
   }
 
   /* === LANDING LOGO MOBILE LAYOUT === */
@@ -741,7 +748,7 @@ body {
   /* Optional: Adjust special letter size */
   #landing .logo .t-letter,
   #landing .logo .s-letter {
-    font-size: 1.2em; /* Slightly adjust size */
+    font-size: 1.3em; /* Slightly adjust size */
   }
 
   /* === EVENT NEXUS MOBILE SLIDER === */
@@ -753,7 +760,7 @@ body {
 
   #nexus .logo {
       font-size: 2.5rem; /* Smaller title */
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem; /* Move heading up */
   }
 
   /* This is the MOBILE override for the event grid */
@@ -767,6 +774,11 @@ body {
       padding-left: 1.5rem; 
       perspective: none;
       animation: horizontal-slide 30s linear infinite;
+      
+      /* NEW: Allow manual horizontal scroll */
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 1rem; /* Make room for scrollbar */
   }
 
   #nexus .event-node {
